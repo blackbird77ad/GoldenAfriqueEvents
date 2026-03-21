@@ -8,6 +8,7 @@ import Catering from './pages/Catering';
 import Rentals  from './pages/Rentals';
 import Gallery  from './pages/Gallery';
 import Contact  from './pages/Contact';
+import Admin    from './pages/Admin';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -16,11 +17,14 @@ const ScrollToTop = () => {
 };
 
 export default function App() {
+  const location  = useLocation();
+  const isAdmin   = location.pathname === '/admin';
+
   return (
     <CartProvider>
       <ScrollToTop />
       <div className="min-h-screen flex flex-col">
-        <Navbar />
+        {!isAdmin && <Navbar />}
         <main className="flex-1">
           <Routes>
             <Route path="/"         element={<Home />}     />
@@ -28,9 +32,10 @@ export default function App() {
             <Route path="/rentals"  element={<Rentals />}  />
             <Route path="/gallery"  element={<Gallery />}  />
             <Route path="/contact"  element={<Contact />}  />
+            <Route path="/admin"    element={<Admin />}    />
           </Routes>
         </main>
-        <Footer />
+        {!isAdmin && <Footer />}
       </div>
     </CartProvider>
   );

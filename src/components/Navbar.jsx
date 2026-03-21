@@ -41,7 +41,7 @@ export default function Navbar() {
             </div>
             <div>
               <div className="text-white font-extrabold text-base leading-none">Golden Afrique</div>
-              <div className="text-yellow-400 text-xs tracking-widest uppercase">Events</div>
+              <div className="text-yellow-400 text-xs tracking-widest uppercase">Event</div>
             </div>
           </Link>
 

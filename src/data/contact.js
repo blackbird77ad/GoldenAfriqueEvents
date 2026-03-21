@@ -5,14 +5,14 @@ export const PHONE          = '+233 50 1657 205'; // replace with client number
 export const buildCateringMessage = (cart) => {
   const lines = cart.map(i => `• [${i.id}] ${i.name} x${i.qty}`).join('\n');
   return encodeURIComponent(
-    `Hello Golden Afrique Events! 🍽️\n\nI'd like to place a catering order:\n\n${lines}\n\nPlease confirm availability and pricing. Thank you!`
+    `Hello Golden Afrique Event! 🍽️\n\nI'd like to place a catering order:\n\n${lines}\n\nPlease confirm availability and pricing. Thank you!`
   );
 };
 
 export const buildRentalMessage = (cart) => {
   const lines = cart.map(i => `• [${i.id}] ${i.name} x${i.qty}`).join('\n');
   return encodeURIComponent(
-    `Hello Golden Afrique Events! 🎪\n\nI'd like to inquire about renting the following:\n\n${lines}\n\nPlease share availability, pricing and delivery options. Thank you!`
+    `Hello Golden Afrique Event! 🎪\n\nI'd like to inquire about renting the following:\n\n${lines}\n\nPlease share availability, pricing and delivery options. Thank you!`
   );
 };
 

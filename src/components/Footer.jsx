@@ -17,7 +17,7 @@ export default function Footer() {
                 <UtensilsCrossed size={18} className="text-black" />
               </div>
               <div>
-                <div className="font-extrabold text-base leading-none">Golden Afrique Events</div>
+                <div className="font-extrabold text-base leading-none">Golden Afrique Event</div>
                 <div className="text-yellow-400 text-xs tracking-widest uppercase">Catering & Rentals</div>
               </div>
             </div>
@@ -63,7 +63,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-gray-600 text-xs">© {year} Golden Afrique Events. All rights reserved.</p>
+          <p className="text-gray-600 text-xs">© {year} Golden Afrique Event. All rights reserved.</p>
           <p className="text-gray-600 text-xs">Built by <a href="https://thebrandhelper.com" target="_blank" rel="noopener noreferrer" className="text-yellow-500 hover:text-yellow-300 transition-colors">The BrandHelper</a></p>
         </div>
       </div>
