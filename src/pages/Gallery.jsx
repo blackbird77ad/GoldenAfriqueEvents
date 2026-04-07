@@ -34,7 +34,6 @@ const ALL_IMAGES = [
   { src: '/catering-services/fried-rice-chicken-shito.png',             caption: 'Fried Rice with Chicken & Shito',        tags: ['catering']            },
   { src: '/catering-services/jollof.png',                               caption: 'Classic Ghanaian Jollof Rice',           tags: ['catering']            },
   { src: '/catering-services/fufu-light-soup.jpg',                      caption: 'Fufu & Light Soup',                      tags: ['catering']            },
-  { src: '/catering-services/1000118610.png',                           caption: 'Client Catering Order',                  tags: ['catering', 'parties'] },
   // Pastries & Snacks
   { src: '/catering-services/party-pastries.jpg',                       caption: 'Party Pastries Selection',               tags: ['pastries', 'parties'] },
   { src: '/catering-services/party-meat-pie.jpg',                       caption: 'Party Meat Pies',                        tags: ['pastries', 'parties'] },
@@ -70,7 +69,7 @@ export default function Gallery() {
       <div className="bg-black text-white text-center py-20 px-4">
         <p className="text-yellow-400 text-xs font-bold uppercase tracking-widest mb-3">Our Portfolio</p>
         <h1 className="text-4xl md:text-6xl font-extrabold mb-4">Event Gallery</h1>
-        <p className="text-gray-300 max-w-xl mx-auto">A glimpse of what we've created — every event is unique and yours will be too.</p>
+        <p className="text-gray-300 max-w-xl mx-auto">A glimpse of what we've created , every event is unique and yours will be too.</p>
       </div>
 
       {/* Filters */}

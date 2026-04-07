@@ -1,22 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, Plus, Minus, Trash2, X, MessageCircle, Phone, Instagram } from 'lucide-react';
-import { CATERING_MENU } from '../data/catering';
 import { useCart } from '../context/CartContext';
 import { buildCateringMessage, whatsappLink, instagramLink, PHONE, WHATSAPP_NUMBER } from '../data/contact';
 import ChefCharacter from '../components/ChefCharacter';
 import { PartyPlanner } from '../components/CoordinatorCharacter';
 
-const CATEGORIES = ['All', ...CATERING_MENU.map(c => c.category)];
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8001';
 
 export default function Catering() {
+  const [items,          setItems]          = useState([]);
+  const [loading,        setLoading]        = useState(true);
   const [activeCategory, setActiveCategory] = useState('All');
   const [cartOpen,       setCartOpen]       = useState(false);
   const { cateringCart, addToCart, removeFromCart, updateQty, cateringCount } = useCart();
 
-  const allItems = CATERING_MENU.flatMap(c => c.items.map(i => ({ ...i, category: c.category })));
-  const filtered = activeCategory === 'All' ? allItems : allItems.filter(i => i.category === activeCategory);
-  const inCart   = id => cateringCart.find(i => i.id === id);
+  useEffect(() => {
+    fetch(`${API}/api/catering/public`)
+      .then(r => r.json())
+      .then(data => {
+        setItems(Array.isArray(data) ? data : []);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  // Build category list from live data
+  const categories = ['All', ...([...new Set(items.map(i => i.category))])];
+  const filtered   = activeCategory === 'All' ? items : items.filter(i => i.category === activeCategory);
+  const inCart     = id => cateringCart.find(i => i.id === id);
 
   const sendOrder = () => {
     const msg = buildCateringMessage(cateringCart);
@@ -56,10 +68,10 @@ export default function Catering() {
       <div className="bg-black py-4 px-4">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-white text-sm font-bold text-center sm:text-left">
-            🍲 Don't see the food you're looking for? Our menu is not exhaustive - we cook much more!
+            🍲 Don't see the food you're looking for? Our menu is not exhaustive, we cook much more!
           </p>
           <p className="text-yellow-400 text-xs font-extrabold animate-pulse">
-            👨‍🍳 Chat with our chef below ↓
+            👨‍🍳 Chat with our chef below →
           </p>
         </div>
       </div>
@@ -67,57 +79,87 @@ export default function Catering() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
 
         {/* Category filter */}
-        <div className="flex gap-2 overflow-x-auto pb-2 mb-8 hide-scroll">
-          {CATEGORIES.map(cat => (
-            <button key={cat} onClick={() => setActiveCategory(cat)}
-              className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap border-2 transition-all ${activeCategory === cat ? 'bg-black text-white border-black' : 'border-gray-200 text-gray-600 hover:border-black'}`}>
-              {cat}
-            </button>
-          ))}
-        </div>
+        {!loading && (
+          <div className="flex gap-2 overflow-x-auto pb-2 mb-8 hide-scroll">
+            {categories.map(cat => (
+              <button key={cat} onClick={() => setActiveCategory(cat)}
+                className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap border-2 transition-all ${activeCategory === cat ? 'bg-black text-white border-black' : 'border-gray-200 text-gray-600 hover:border-black'}`}>
+                {cat}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Loading skeleton */}
+        {loading && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="rounded-2xl border border-gray-100 overflow-hidden animate-pulse">
+                <div className="aspect-square bg-gray-200" />
+                <div className="p-3">
+                  <div className="h-4 bg-gray-200 rounded mb-2" />
+                  <div className="h-3 bg-gray-100 rounded mb-3 w-3/4" />
+                  <div className="h-8 bg-gray-200 rounded" />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!loading && filtered.length === 0 && (
+          <div className="text-center py-20">
+            <div className="text-4xl mb-3">🍽️</div>
+            <p className="text-gray-400 font-bold text-lg">No items yet</p>
+            <p className="text-gray-300 text-sm mt-1">Check back soon or chat with our chef below</p>
+          </div>
+        )}
 
         {/* Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-          <AnimatePresence mode="popLayout">
-            {filtered.map((item, i) => {
-              const cartItem = inCart(item.id);
-              return (
-                <motion.div key={item.id} layout
-                  initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.3, delay: i * 0.03 }}
-                  className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                  <div className="relative aspect-square overflow-hidden bg-gray-50">
-                    <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
-                    <span className="absolute top-2 left-2 bg-black/70 text-yellow-400 text-xs font-extrabold px-2 py-0.5 rounded-full">{item.id}</span>
-                  </div>
-                  <div className="p-3">
-                    <h3 className="font-extrabold text-sm leading-tight mb-1">{item.name}</h3>
-                    <p className="text-gray-500 text-xs mb-3 line-clamp-2">{item.desc}</p>
-                    <p className="text-xs text-yellow-600 font-bold mb-3">Contact for pricing</p>
-                    {cartItem ? (
-                      <div className="flex items-center gap-2">
-                        <button onClick={() => updateQty(item.id, cartItem.qty - 1, 'catering')}
-                          className="w-7 h-7 rounded-full border-2 border-black flex items-center justify-center hover:bg-black hover:text-white transition-all">
-                          <Minus size={12} />
+        {!loading && filtered.length > 0 && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            <AnimatePresence mode="popLayout">
+              {filtered.map((item, i) => {
+                const cartItem = inCart(item.itemId);
+                return (
+                  <motion.div key={item._id} layout
+                    initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.3, delay: i * 0.03 }}
+                    className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                    <div className="relative aspect-square overflow-hidden bg-gray-50">
+                      <img src={item.image} alt={item.name} className="w-full h-full object-cover"
+                        onError={e => { e.target.src = '/catering-services/jollof.png'; }} />
+                      <span className="absolute top-2 left-2 bg-black/70 text-yellow-400 text-xs font-extrabold px-2 py-0.5 rounded-full">{item.itemId}</span>
+                    </div>
+                    <div className="p-3">
+                      <h3 className="font-extrabold text-sm leading-tight mb-1">{item.name}</h3>
+                      <p className="text-gray-500 text-xs mb-3 line-clamp-2">{item.desc}</p>
+                      <p className="text-xs text-yellow-600 font-bold mb-3">Contact for pricing</p>
+                      {cartItem ? (
+                        <div className="flex items-center gap-2">
+                          <button onClick={() => updateQty(item.itemId, cartItem.qty - 1, 'catering')}
+                            className="w-7 h-7 rounded-full border-2 border-black flex items-center justify-center hover:bg-black hover:text-white transition-all">
+                            <Minus size={12} />
+                          </button>
+                          <span className="font-extrabold text-sm flex-1 text-center">{cartItem.qty}</span>
+                          <button onClick={() => updateQty(item.itemId, cartItem.qty + 1, 'catering')}
+                            className="w-7 h-7 rounded-full border-2 border-black flex items-center justify-center hover:bg-black hover:text-white transition-all">
+                            <Plus size={12} />
+                          </button>
+                        </div>
+                      ) : (
+                        <button onClick={() => addToCart({ ...item, id: item.itemId }, 'catering')}
+                          className="w-full py-2 rounded-xl bg-yellow-400 text-black font-extrabold text-xs uppercase tracking-wide hover:bg-yellow-300 transition-all">
+                          + Select
                         </button>
-                        <span className="font-extrabold text-sm flex-1 text-center">{cartItem.qty}</span>
-                        <button onClick={() => updateQty(item.id, cartItem.qty + 1, 'catering')}
-                          className="w-7 h-7 rounded-full border-2 border-black flex items-center justify-center hover:bg-black hover:text-white transition-all">
-                          <Plus size={12} />
-                        </button>
-                      </div>
-                    ) : (
-                      <button onClick={() => addToCart(item, 'catering')}
-                        className="w-full py-2 rounded-xl bg-yellow-400 text-black font-extrabold text-xs uppercase tracking-wide hover:bg-yellow-300 transition-all">
-                        + Select
-                      </button>
-                    )}
-                  </div>
-                </motion.div>
-              );
-            })}
-          </AnimatePresence>
-        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </div>
+        )}
       </div>
 
       {/* Floating cart */}
@@ -155,7 +197,8 @@ export default function Catering() {
               <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-3">
                 {cateringCart.map(item => (
                   <div key={item.id} className="flex items-center gap-3 p-3 rounded-2xl bg-gray-50">
-                    <img src={item.image} alt={item.name} className="w-14 h-14 rounded-xl object-cover shrink-0" />
+                    <img src={item.image} alt={item.name} className="w-14 h-14 rounded-xl object-cover shrink-0"
+                      onError={e => { e.target.src = '/catering-services/jollof.png'; }} />
                     <div className="flex-1 min-w-0">
                       <div className="text-xs text-yellow-600 font-bold">{item.id}</div>
                       <div className="font-extrabold text-sm">{item.name}</div>
@@ -189,10 +232,10 @@ export default function Catering() {
         )}
       </AnimatePresence>
 
-      {/* Chef character — bottom right */}
+      {/* Chef character */}
       <ChefCharacter variant="full" />
 
-      {/* Party planner — will sit above chef, offset */}
+      {/* Party planner */}
       <div className="fixed bottom-24 right-28 z-30">
         <PartyPlanner />
       </div>

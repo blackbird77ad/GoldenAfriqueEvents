@@ -9,11 +9,10 @@ const rentalSchema = new mongoose.Schema({
   available: { type: Boolean, default: true },
 }, { timestamps: true });
 
-rentalSchema.pre('save', async function (next) {
-  if (!this.isNew) return next();
+rentalSchema.pre('save', async function () {
+  if (!this.isNew) return;
   const count = await mongoose.model('RentalItem').countDocuments();
   this.itemId = `R${String(count + 1).padStart(3, '0')}`;
-  next();
 });
 
 const RentalItem = mongoose.model('RentalItem', rentalSchema);

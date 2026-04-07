@@ -1,28 +1,40 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, Plus, Minus, Trash2, X, MessageCircle, Phone, Instagram, Info } from 'lucide-react';
-import { RENTALS } from '../data/rentals';
 import { useCart } from '../context/CartContext';
 import { buildRentalMessage, whatsappLink, instagramLink, PHONE, WHATSAPP_NUMBER } from '../data/contact';
 import { RentalCoordinator } from '../components/CoordinatorCharacter';
 
-const CATEGORIES = ['All', ...RENTALS.map(c => c.category)];
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8001';
 
 export default function Rentals() {
+  const [items,          setItems]          = useState([]);
+  const [loading,        setLoading]        = useState(true);
   const [activeCategory, setActiveCategory] = useState('All');
   const [cartOpen,       setCartOpen]       = useState(false);
   const [searchTerm,     setSearchTerm]     = useState('');
   const { rentalCart, addToCart, removeFromCart, updateQty, rentalCount } = useCart();
 
-  const allItems = RENTALS.flatMap(c => c.items.map(i => ({ ...i, category: c.category })));
-  const filtered = allItems.filter(i => {
+  useEffect(() => {
+    fetch(`${API}/api/rentals/public`)
+      .then(r => r.json())
+      .then(data => {
+        setItems(Array.isArray(data) ? data : []);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const categories = ['All', ...([...new Set(items.map(i => i.category))])];
+  const filtered   = items.filter(i => {
     const matchCat    = activeCategory === 'All' || i.category === activeCategory;
-    const matchSearch = i.name.toLowerCase().includes(searchTerm.toLowerCase()) || i.id.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchSearch = i.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        i.itemId.toLowerCase().includes(searchTerm.toLowerCase());
     return matchCat && matchSearch;
   });
 
-  const inCart    = id => rentalCart.find(i => i.id === id);
-  const sendInq   = () => { const msg = buildRentalMessage(rentalCart); window.open(whatsappLink(msg), '_blank'); };
+  const inCart  = id => rentalCart.find(i => i.id === id);
+  const sendInq = () => { const msg = buildRentalMessage(rentalCart); window.open(whatsappLink(msg), '_blank'); };
 
   return (
     <div className="min-h-screen bg-white pt-16 md:pt-20">
@@ -36,7 +48,7 @@ export default function Rentals() {
         <div className="relative z-10">
           <p className="text-yellow-400 text-xs font-bold uppercase tracking-widest mb-3">Event Equipment</p>
           <h1 className="text-4xl md:text-6xl font-extrabold mb-4">Rentals Catalogue</h1>
-          <p className="text-gray-300 max-w-xl mx-auto text-base">Over 80 items for hire. Each item has a unique ID — use it when calling or messaging us for super fast service.</p>
+          <p className="text-gray-300 max-w-xl mx-auto text-base">Items available for hire. Each item has a unique ID, use it when calling or messaging us for fast service.</p>
         </div>
       </div>
 
@@ -55,7 +67,7 @@ export default function Rentals() {
       <div className="bg-blue-50 border-b border-blue-100 py-3 px-4">
         <div className="max-w-7xl mx-auto flex items-center gap-2 text-xs text-blue-700">
           <Info size={14} className="shrink-0" />
-          <span><strong>Quick tip:</strong> You can also just call or WhatsApp us with the item ID directly — no need to use the cart. e.g. "I need R001 x20 and R006 x5 for 15 April"</span>
+          <span><strong>Quick tip:</strong> Call or WhatsApp us with the item ID directly, e.g. "I need R001 x20 and R006 x5 for 15 April"</span>
         </div>
       </div>
 
@@ -67,53 +79,85 @@ export default function Rentals() {
           className="w-full mb-6 px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-black transition-all" />
 
         {/* Category filter */}
-        <div className="flex gap-2 overflow-x-auto pb-3 mb-6 hide-scroll">
-          {CATEGORIES.map(cat => (
-            <button key={cat} onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap border-2 transition-all ${activeCategory === cat ? 'bg-black text-white border-black' : 'border-gray-200 text-gray-500 hover:border-black'}`}>
-              {cat}
-            </button>
-          ))}
-        </div>
+        {!loading && (
+          <div className="flex gap-2 overflow-x-auto pb-3 mb-6 hide-scroll">
+            {categories.map(cat => (
+              <button key={cat} onClick={() => setActiveCategory(cat)}
+                className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap border-2 transition-all ${activeCategory === cat ? 'bg-black text-white border-black' : 'border-gray-200 text-gray-500 hover:border-black'}`}>
+                {cat}
+              </button>
+            ))}
+          </div>
+        )}
 
-        <p className="text-sm text-gray-400 mb-6">{filtered.length} item{filtered.length !== 1 ? 's' : ''} found</p>
+        {!loading && <p className="text-sm text-gray-400 mb-6">{filtered.length} item{filtered.length !== 1 ? 's' : ''} found</p>}
+
+        {/* Loading skeleton */}
+        {loading && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {[...Array(10)].map((_, i) => (
+              <div key={i} className="rounded-2xl border border-gray-100 overflow-hidden animate-pulse">
+                <div className="aspect-square bg-gray-200" />
+                <div className="p-3">
+                  <div className="h-3 bg-gray-200 rounded mb-2" />
+                  <div className="h-3 bg-gray-100 rounded mb-3 w-3/4" />
+                  <div className="h-7 bg-gray-200 rounded" />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!loading && filtered.length === 0 && (
+          <div className="text-center py-20">
+            <div className="text-4xl mb-3">📦</div>
+            <p className="text-gray-400 font-bold text-lg">No items found</p>
+            <p className="text-gray-300 text-sm mt-1">Try a different search or chat with our coordinator below</p>
+          </div>
+        )}
 
         {/* Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          <AnimatePresence mode="popLayout">
-            {filtered.map((item, i) => {
-              const cartItem = inCart(item.id);
-              return (
-                <motion.div key={item.id} layout
-                  initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.3, delay: Math.min(i * 0.02, 0.2) }}
-                  className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                  <div className="relative aspect-square overflow-hidden bg-gray-50">
-                    <img src={item.image} alt={item.name} className="w-full h-full object-cover"
-                      onError={e => { e.target.style.background = '#f3f4f6'; e.target.style.display = 'none'; }} />
-                    <span className="absolute top-2 left-2 bg-black/80 text-yellow-400 text-xs font-extrabold px-2 py-0.5 rounded-full">{item.id}</span>
-                    {cartItem && <span className="absolute top-2 right-2 bg-yellow-400 text-black text-xs font-extrabold px-2 py-0.5 rounded-full">x{cartItem.qty}</span>}
-                  </div>
-                  <div className="p-3">
-                    <div className="text-xs text-gray-400 font-bold mb-0.5">{item.category}</div>
-                    <h3 className="font-extrabold text-xs leading-tight mb-1">{item.name}</h3>
-                    <p className="text-gray-400 text-xs mb-2 line-clamp-2">{item.desc}</p>
-                    <p className="text-xs text-yellow-600 font-bold mb-2">Price on request</p>
-                    {cartItem ? (
-                      <div className="flex items-center gap-1.5">
-                        <button onClick={() => updateQty(item.id, cartItem.qty - 1, 'rental')} className="w-7 h-7 rounded-full border-2 border-black flex items-center justify-center hover:bg-black hover:text-white transition-all"><Minus size={11} /></button>
-                        <span className="font-extrabold text-sm flex-1 text-center">{cartItem.qty}</span>
-                        <button onClick={() => updateQty(item.id, cartItem.qty + 1, 'rental')} className="w-7 h-7 rounded-full border-2 border-black flex items-center justify-center hover:bg-black hover:text-white transition-all"><Plus size={11} /></button>
-                      </div>
-                    ) : (
-                      <button onClick={() => addToCart(item, 'rental')} className="w-full py-2 rounded-xl bg-yellow-400 text-black font-extrabold text-xs uppercase tracking-wide hover:bg-yellow-300 transition-all">+ Inquire</button>
-                    )}
-                  </div>
-                </motion.div>
-              );
-            })}
-          </AnimatePresence>
-        </div>
+        {!loading && filtered.length > 0 && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <AnimatePresence mode="popLayout">
+              {filtered.map((item, i) => {
+                const cartItem = inCart(item.itemId);
+                return (
+                  <motion.div key={item._id} layout
+                    initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.3, delay: Math.min(i * 0.02, 0.2) }}
+                    className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                    <div className="relative aspect-square overflow-hidden bg-gray-50">
+                      <img src={item.image} alt={item.name} className="w-full h-full object-cover"
+                        onError={e => { e.target.style.display = 'none'; }} />
+                      <span className="absolute top-2 left-2 bg-black/80 text-yellow-400 text-xs font-extrabold px-2 py-0.5 rounded-full">{item.itemId}</span>
+                      {cartItem && <span className="absolute top-2 right-2 bg-yellow-400 text-black text-xs font-extrabold px-2 py-0.5 rounded-full">x{cartItem.qty}</span>}
+                    </div>
+                    <div className="p-3">
+                      <div className="text-xs text-gray-400 font-bold mb-0.5">{item.category}</div>
+                      <h3 className="font-extrabold text-xs leading-tight mb-1">{item.name}</h3>
+                      <p className="text-gray-400 text-xs mb-2 line-clamp-2">{item.desc}</p>
+                      <p className="text-xs text-yellow-600 font-bold mb-2">Price on request</p>
+                      {cartItem ? (
+                        <div className="flex items-center gap-1.5">
+                          <button onClick={() => updateQty(item.itemId, cartItem.qty - 1, 'rental')} className="w-7 h-7 rounded-full border-2 border-black flex items-center justify-center hover:bg-black hover:text-white transition-all"><Minus size={11} /></button>
+                          <span className="font-extrabold text-sm flex-1 text-center">{cartItem.qty}</span>
+                          <button onClick={() => updateQty(item.itemId, cartItem.qty + 1, 'rental')} className="w-7 h-7 rounded-full border-2 border-black flex items-center justify-center hover:bg-black hover:text-white transition-all"><Plus size={11} /></button>
+                        </div>
+                      ) : (
+                        <button onClick={() => addToCart({ ...item, id: item.itemId }, 'rental')}
+                          className="w-full py-2 rounded-xl bg-yellow-400 text-black font-extrabold text-xs uppercase tracking-wide hover:bg-yellow-300 transition-all">
+                          + Inquire
+                        </button>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </div>
+        )}
       </div>
 
       {/* Floating cart */}
@@ -182,7 +226,6 @@ export default function Rentals() {
         )}
       </AnimatePresence>
 
-      {/* Rental coordinator character */}
       <RentalCoordinator />
     </div>
   );

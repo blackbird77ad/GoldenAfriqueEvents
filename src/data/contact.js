@@ -1,6 +1,6 @@
-export const WHATSAPP_NUMBER = '233501657205'; // replace with client number later
-export const INSTAGRAM      = '@goldenafriqueevents'; // replace with client handle
-export const PHONE          = '+233 50 1657 205'; // replace with client number
+export const WHATSAPP_NUMBER = '18159051230';
+export const INSTAGRAM      = '@goldenafriqueevent';
+export const PHONE          = '(815) 905-1230';
 
 export const buildCateringMessage = (cart) => {
   const lines = cart.map(i => `• [${i.id}] ${i.name} x${i.qty}`).join('\n');

@@ -51,7 +51,7 @@ const PARTY_STEPS = [
   { key: 'date',     question: "What date is your event?",                                        type: 'input',   placeholder: 'e.g. 20 June 2025, next month...' },
   { key: 'needs',    question: "What do you need from us?",                                       type: 'chips',   options: ['Food / Catering', 'Rentals / Equipment', 'Both Food & Rentals', 'Full Setup'] },
   { key: 'details',  question: "Any specific dishes, items or ideas in mind? (Optional)",        type: 'input',   placeholder: 'e.g. Jollof rice, crystal chairs, gold backdrop...' },
-  { key: 'budget',   question: "Do you have a rough budget in mind? (Optional — skip if unsure)", type: 'input',   placeholder: 'e.g. GHS 5000, not sure yet...' },
+  { key: 'budget',   question: "Do you have a rough budget in mind? (Optional, skip if unsure)", type: 'input',   placeholder: 'e.g. GHS 5000, not sure yet...' },
   { key: 'name',     question: "Almost there! What's your name?",                                 type: 'input',   placeholder: 'Your full name' },
   { key: 'phone',    question: "And your WhatsApp number so we can reach you?",                   type: 'input',   placeholder: 'e.g. +233 XX XXX XXXX' },
 ];
@@ -253,7 +253,7 @@ function ChatFlow({ steps, onSend, headerTitle, headerSub, bubbleText, introText
   );
 }
 
-// Party Planner — for Home + Catering pages
+// Party Planner, for Home + Catering pages
 export function PartyPlanner({ variant = 'full' }) {
   if (variant === 'small') {
     return (
@@ -283,7 +283,7 @@ export function PartyPlanner({ variant = 'full' }) {
   );
 }
 
-// Rental Coordinator — for Rentals page
+// Rental Coordinator, for Rentals page
 export function RentalCoordinator() {
   return (
     <div className="fixed bottom-6 right-6 z-40">

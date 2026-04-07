@@ -3,69 +3,58 @@ import { Phone, MessageCircle, Instagram, UtensilsCrossed } from 'lucide-react';
 import { WHATSAPP_NUMBER, PHONE, instagramLink, INSTAGRAM } from '../data/contact';
 
 export default function Footer() {
-  const year = new Date().getFullYear();
-
   return (
-    <footer className="bg-black text-white pt-16 pb-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-12">
+    <footer style={{ background: 'var(--brown-dark)', borderTop: '4px solid var(--gold)', color: 'var(--brown-pale)' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '4rem 1.5rem 2rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '2.5rem' }}>
 
-          {/* Brand */}
-          <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-9 h-9 rounded-full bg-yellow-500 flex items-center justify-center shrink-0">
-                <UtensilsCrossed size={18} className="text-black" />
-              </div>
-              <div>
-                <div className="font-extrabold text-base leading-none">Golden Afrique Event</div>
-                <div className="text-yellow-400 text-xs tracking-widest uppercase">Catering & Rentals</div>
-              </div>
+        {/* Brand */}
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+            <div style={{ width: 36, height: 36, background: 'var(--gold)', borderRadius: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <UtensilsCrossed size={18} color="var(--brown-dark)" />
             </div>
-            <p className="text-gray-400 text-sm leading-relaxed">
-              Bringing African elegance to every occasion. From catering to full event décor and equipment hire — we make your event unforgettable.
-            </p>
-          </div>
-
-          {/* Quick links */}
-          <div>
-            <div className="font-extrabold text-sm uppercase tracking-widest text-yellow-400 mb-4">Quick Links</div>
-            <div className="flex flex-col gap-2">
-              {[
-                { path: '/',         label: 'Home'     },
-                { path: '/catering', label: 'Catering' },
-                { path: '/rentals',  label: 'Rentals'  },
-                { path: '/gallery',  label: 'Gallery'  },
-                { path: '/contact',  label: 'Contact'  },
-              ].map(({ path, label }) => (
-                <Link key={path} to={path} className="text-gray-400 hover:text-yellow-400 text-sm transition-colors">{label}</Link>
-              ))}
+            <div>
+              <div style={{ color: 'var(--gold)', fontWeight: 900, fontSize: '1rem', lineHeight: 1.1 }}>Golden Afrique Event</div>
+              <div style={{ color: 'var(--brown-light)', fontSize: '0.6rem', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700 }}>Catering and Rentals</div>
             </div>
           </div>
-
-          {/* Contact */}
-          <div>
-            <div className="font-extrabold text-sm uppercase tracking-widest text-yellow-400 mb-4">Get In Touch</div>
-            <div className="flex flex-col gap-3">
-              <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-3 text-gray-400 hover:text-green-400 transition-colors text-sm">
-                <MessageCircle size={16} className="shrink-0" /> WhatsApp Us
-              </a>
-              <a href={`tel:${PHONE}`}
-                className="flex items-center gap-3 text-gray-400 hover:text-yellow-400 transition-colors text-sm">
-                <Phone size={16} className="shrink-0" /> {PHONE}
-              </a>
-              <a href={instagramLink} target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-3 text-gray-400 hover:text-pink-400 transition-colors text-sm">
-                <Instagram size={16} className="shrink-0" /> {INSTAGRAM}
-              </a>
-            </div>
-          </div>
+          <p style={{ fontSize: '0.84rem', lineHeight: 1.85, color: 'var(--brown-light)' }}>
+            Bringing authentic African flavour and elegant decor to every occasion. From Jollof to gold centrepieces.
+          </p>
         </div>
 
-        <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-gray-600 text-xs">© {year} Golden Afrique Event. All rights reserved.</p>
-          <p className="text-gray-600 text-xs">Built by <a href="https://thebrandhelper.com" target="_blank" rel="noopener noreferrer" className="text-yellow-500 hover:text-yellow-300 transition-colors">The BrandHelper</a></p>
+        {/* Links */}
+        <div>
+          <div style={{ color: 'var(--gold)', fontWeight: 900, fontSize: '0.72rem', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: 16 }}>Quick Links</div>
+          {[['/', 'Home'], ['/catering', 'Catering'], ['/rentals', 'Rentals'], ['/gallery', 'Gallery'], ['/contact', 'Contact']].map(([path, label]) => (
+            <Link key={path} to={path} style={{ display: 'block', color: 'var(--brown-light)', fontSize: '0.84rem', fontWeight: 600, marginBottom: 8, textDecoration: 'none' }}>{label}</Link>
+          ))}
         </div>
+
+        {/* Contact */}
+        <div>
+          <div style={{ color: 'var(--gold)', fontWeight: 900, fontSize: '0.72rem', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: 16 }}>Get In Touch</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer"
+              style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'var(--brown-light)', textDecoration: 'none', fontSize: '0.84rem', fontWeight: 600 }}>
+              <MessageCircle size={16} /> WhatsApp Us
+            </a>
+            <a href="tel:+18159051230"
+              style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'var(--brown-light)', textDecoration: 'none', fontSize: '0.84rem', fontWeight: 600 }}>
+              <Phone size={16} /> {PHONE}
+            </a>
+            <a href={instagramLink} target="_blank" rel="noopener noreferrer"
+              style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'var(--brown-light)', textDecoration: 'none', fontSize: '0.84rem', fontWeight: 600 }}>
+              <Instagram size={16} /> {INSTAGRAM}
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ borderTop: '1px solid rgba(245,200,66,0.15)', padding: '1.2rem 1.5rem', textAlign: 'center' }}>
+        <p style={{ color: 'var(--brown-light)', fontSize: '0.72rem' }}>
+          2025 Golden Afrique Event. All rights reserved.
+        </p>
       </div>
     </footer>
   );

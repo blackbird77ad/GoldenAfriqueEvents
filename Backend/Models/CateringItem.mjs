@@ -1,7 +1,5 @@
 import mongoose from 'mongoose';
 
-let cateringCounter = 0;
-
 const cateringSchema = new mongoose.Schema({
   itemId:    { type: String, unique: true },
   name:      { type: String, required: true, trim: true },
@@ -11,11 +9,10 @@ const cateringSchema = new mongoose.Schema({
   available: { type: Boolean, default: true },
 }, { timestamps: true });
 
-cateringSchema.pre('save', async function (next) {
-  if (!this.isNew) return next();
+cateringSchema.pre('save', async function () {
+  if (!this.isNew) return;
   const count = await mongoose.model('CateringItem').countDocuments();
   this.itemId = `C${String(count + 1).padStart(3, '0')}`;
-  next();
 });
 
 const CateringItem = mongoose.model('CateringItem', cateringSchema);

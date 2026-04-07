@@ -12,8 +12,9 @@ const PORT = process.env.PORT || 8001;
 const ALLOWED_ORIGINS = [
   'http://localhost:5173',
   'http://localhost:3000',
-  'https://goldenafrique.com',
-  'https://goldenafriqueevents.pages.dev',
+ 'https://goldenafriqueevents.com',
+'https://www.goldenafriqueevents.com',
+'https://goldenafriqueevents.pages.dev',
 ];
 
 app.use(cors({ origin: ALLOWED_ORIGINS, credentials: true }));
