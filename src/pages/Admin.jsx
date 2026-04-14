@@ -25,7 +25,6 @@ const normalizeGoogleDriveUrl = (url = '') => {
   if (!url || url.startsWith('data:')) return url;
 
   const trimmed = url.trim();
-
   const fileMatch = trimmed.match(/\/file\/d\/([^/]+)/);
   const openMatch = trimmed.match(/[?&]id=([^&]+)/);
   const ucMatch = trimmed.match(/\/uc\?(?:.*&)?id=([^&]+)/);
@@ -66,11 +65,7 @@ const api = async (path, opts = {}) => {
   }
 
   if (!res.ok) {
-    throw new Error(
-      data?.error ||
-      data?.message ||
-      `Request failed with status ${res.status}`
-    );
+    throw new Error(data?.error || data?.message || 'Request failed');
   }
 
   return data;
@@ -339,7 +334,7 @@ function ItemModal({ item, type, onSave, onClose }) {
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
-  const [imgMode, setImgMode] = useState('url'); // url | upload | editor | preview
+  const [imgMode, setImgMode] = useState('url');
   const [sizeInfo, setSizeInfo] = useState('');
   const [editorSrc, setEditorSrc] = useState('');
   const fileRef = useRef(null);
@@ -467,7 +462,7 @@ function ItemModal({ item, type, onSave, onClose }) {
             </div>
           </div>
           <button
-            onClick={imgMode === 'editor' ? () => setImgMode('url') : onClose}
+            onClick={imgMode === 'editor' ? () => setImgMode(form.image ? 'preview' : 'url') : onClose}
             style={{ width: 32, height: 32, borderRadius: '50%', border: '1.5px solid var(--brown-pale)', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           >
             <X size={15} color="var(--brown)" />
@@ -702,74 +697,221 @@ function ItemModal({ item, type, onSave, onClose }) {
 }
 
 /* ─── PIN LOGIN ─── */
-function PinLogin({ onLogin, isSetup }) {
+function PinLogin({ onLogin, isSetup, resetEnabled, onResetSuccess }) {
+  const [mode, setMode] = useState(isSetup ? 'setup' : 'login');
   const [pin, setPin] = useState('');
+  const [newPin, setNewPin] = useState('');
+  const [masterPin, setMasterPin] = useState('');
   const [err, setErr] = useState('');
+  const [msg, setMsg] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const submit = async () => {
-    if (pin.length < 4) {
-      setErr('PIN must be at least 4 digits');
-      return;
-    }
+  useEffect(() => {
+    setMode(isSetup ? 'setup' : 'login');
+  }, [isSetup]);
 
-    setLoading(true);
+  const clearFields = () => {
+    setPin('');
+    setNewPin('');
+    setMasterPin('');
+  };
+
+  const submit = async () => {
     setErr('');
+    setMsg('');
+    setLoading(true);
 
     try {
-      if (isSetup) {
-        await api('/api/auth/setup', { method: 'POST', body: JSON.stringify({ pin }) });
+      if (mode === 'setup') {
+        const cleanPin = pin.replace(/\D/g, '');
+        if (cleanPin.length < 4) {
+          throw new Error('PIN must be at least 4 digits');
+        }
+
+        await api('/api/auth/setup', {
+          method: 'POST',
+          body: JSON.stringify({ pin: cleanPin }),
+        });
+
+        const data = await api('/api/auth/login', {
+          method: 'POST',
+          body: JSON.stringify({ pin: cleanPin }),
+        });
+
+        localStorage.setItem('ga_admin_token', data.token);
+        onLogin();
+        return;
       }
 
-      const data = await api('/api/auth/login', { method: 'POST', body: JSON.stringify({ pin }) });
-      localStorage.setItem('ga_admin_token', data.token);
-      onLogin();
+      if (mode === 'login') {
+        const cleanPin = pin.replace(/\D/g, '');
+        if (cleanPin.length < 4) {
+          throw new Error('PIN must be at least 4 digits');
+        }
+
+        const data = await api('/api/auth/login', {
+          method: 'POST',
+          body: JSON.stringify({ pin: cleanPin }),
+        });
+
+        localStorage.setItem('ga_admin_token', data.token);
+        onLogin();
+        return;
+      }
+
+      if (mode === 'reset') {
+        const cleanMaster = masterPin.replace(/\D/g, '');
+        const cleanNewPin = newPin.replace(/\D/g, '');
+
+        if (cleanMaster.length < 4) {
+          throw new Error('Enter master reset PIN');
+        }
+
+        if (cleanNewPin.length < 4) {
+          throw new Error('New PIN must be at least 4 digits');
+        }
+
+        await api('/api/auth/reset', {
+          method: 'POST',
+          body: JSON.stringify({
+            masterPin: cleanMaster,
+            newPin: cleanNewPin,
+          }),
+        });
+
+        setMsg('PIN reset successful. Log in with your new PIN.');
+        clearFields();
+        setMode('login');
+        onResetSuccess?.();
+        return;
+      }
     } catch (e) {
-      setErr(e.message);
+      setErr(e.message || 'Request failed');
     } finally {
       setLoading(false);
     }
   };
 
+  const title =
+    mode === 'setup'
+      ? 'Set Up Admin PIN'
+      : mode === 'reset'
+      ? 'Reset Admin PIN'
+      : 'Admin Dashboard';
+
+  const subtitle =
+    mode === 'setup'
+      ? 'Create your admin PIN'
+      : mode === 'reset'
+      ? 'Use master reset PIN to create a new admin PIN'
+      : 'Enter your admin PIN';
+
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--brown-dark)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+    <div style={{ minHeight:'100vh', background:'var(--brown-dark)', display:'flex', alignItems:'center', justifyContent:'center', padding:'1rem' }}>
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        style={{ background: '#fff', borderRadius: 16, padding: '2.5rem', width: '100%', maxWidth: 360, boxShadow: '0 24px 64px rgba(44,26,6,0.4)' }}
+        initial={{ opacity:0, y:24 }}
+        animate={{ opacity:1, y:0 }}
+        style={{ background:'#fff', borderRadius:16, padding:'2.5rem', width:'100%', maxWidth:380, boxShadow:'0 24px 64px rgba(44,26,6,0.4)' }}
       >
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{ width: 56, height: 56, background: 'var(--gold)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', fontSize: '1.5rem' }}>
+        <div style={{ textAlign:'center', marginBottom:'2rem' }}>
+          <div style={{ width:56, height:56, background:'var(--gold)', borderRadius:12, display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 1rem', fontSize:'1.5rem' }}>
             🔐
           </div>
-          <div style={{ fontWeight: 900, fontSize: '1.1rem', color: 'var(--brown-dark)' }}>Admin Dashboard</div>
-          <div style={{ fontSize: '0.78rem', color: 'var(--brown)', marginTop: 4 }}>Golden Afrique Event</div>
-          {isSetup && <div style={{ fontSize: '0.72rem', color: '#2563eb', fontWeight: 800, marginTop: 8 }}>First time? Create your PIN below</div>}
+          <div style={{ fontWeight:900, fontSize:'1.1rem', color:'var(--brown-dark)' }}>{title}</div>
+          <div style={{ fontSize:'0.78rem', color:'var(--brown)', marginTop:4 }}>Golden Afrique Event</div>
+          <div style={{ fontSize:'0.72rem', color:'var(--brown-light)', marginTop:8 }}>{subtitle}</div>
         </div>
 
         {err && (
-          <div style={{ background: '#fee2e2', color: '#991b1b', fontSize: '0.78rem', padding: '10px 14px', borderRadius: 8, marginBottom: 14, textAlign: 'center' }}>
+          <div style={{ background:'#fee2e2', color:'#991b1b', fontSize:'0.78rem', padding:'10px 14px', borderRadius:8, marginBottom:14, textAlign:'center' }}>
             {err}
           </div>
         )}
 
-        <input
-          type="password"
-          value={pin}
-          onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
-          onKeyDown={(e) => e.key === 'Enter' && submit()}
-          maxLength={8}
-          placeholder={isSetup ? 'Create a PIN (min 4 digits)' : 'Enter your PIN'}
-          style={{ ...S.input, textAlign: 'center', fontSize: '1.4rem', letterSpacing: '0.5em', marginBottom: 14 }}
-        />
+        {msg && (
+          <div style={{ background:'#d1fae5', color:'#065f46', fontSize:'0.78rem', padding:'10px 14px', borderRadius:8, marginBottom:14, textAlign:'center' }}>
+            {msg}
+          </div>
+        )}
+
+        {mode === 'reset' ? (
+          <>
+            <input
+              type="password"
+              value={masterPin}
+              onChange={(e) => setMasterPin(e.target.value.replace(/\D/g, ''))}
+              maxLength={12}
+              placeholder="Enter master reset PIN"
+              style={{ ...S.input, textAlign:'center', fontSize:'1rem', marginBottom:12 }}
+            />
+
+            <input
+              type="password"
+              value={newPin}
+              onChange={(e) => setNewPin(e.target.value.replace(/\D/g, ''))}
+              onKeyDown={(e) => e.key === 'Enter' && submit()}
+              maxLength={8}
+              placeholder="Enter new admin PIN"
+              style={{ ...S.input, textAlign:'center', fontSize:'1.1rem', letterSpacing:'0.35em', marginBottom:14 }}
+            />
+          </>
+        ) : (
+          <input
+            type="password"
+            value={pin}
+            onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
+            onKeyDown={(e) => e.key === 'Enter' && submit()}
+            maxLength={8}
+            placeholder={mode === 'setup' ? 'Create a PIN (min 4 digits)' : 'Enter your PIN'}
+            style={{ ...S.input, textAlign:'center', fontSize:'1.4rem', letterSpacing:'0.5em', marginBottom:14 }}
+          />
+        )}
 
         <button
           onClick={submit}
           disabled={loading}
-          style={{ width: '100%', padding: '14px', borderRadius: 8, border: 'none', background: 'var(--brown-dark)', color: 'var(--gold)', fontWeight: 900, fontSize: '0.84rem', cursor: 'pointer', opacity: loading ? 0.6 : 1 }}
+          style={{ width:'100%', padding:'14px', borderRadius:8, border:'none', background:'var(--brown-dark)', color:'var(--gold)', fontWeight:900, fontSize:'0.84rem', cursor:'pointer', opacity: loading ? 0.6 : 1, marginBottom:12 }}
         >
-          {loading ? 'Please wait...' : isSetup ? 'Set Up PIN' : 'Enter Dashboard'}
+          {loading
+            ? 'Please wait...'
+            : mode === 'setup'
+            ? 'Set Up PIN'
+            : mode === 'reset'
+            ? 'Reset PIN'
+            : 'Enter Dashboard'}
         </button>
+
+        <div style={{ display:'flex', justifyContent:'center', gap:10, flexWrap:'wrap' }}>
+          {mode !== 'login' && (
+            <button
+              type="button"
+              onClick={() => {
+                setMode('login');
+                setErr('');
+                setMsg('');
+                clearFields();
+              }}
+              style={{ background:'none', border:'none', color:'var(--brown-dark)', fontWeight:800, cursor:'pointer', fontSize:'0.78rem' }}
+            >
+              Back to Login
+            </button>
+          )}
+
+          {mode !== 'reset' && !isSetup && resetEnabled && (
+            <button
+              type="button"
+              onClick={() => {
+                setMode('reset');
+                setErr('');
+                setMsg('');
+                clearFields();
+              }}
+              style={{ background:'none', border:'none', color:'#b45309', fontWeight:800, cursor:'pointer', fontSize:'0.78rem' }}
+            >
+              Reset with Master PIN
+            </button>
+          )}
+        </div>
       </motion.div>
     </div>
   );
@@ -926,6 +1068,7 @@ function ItemRow({ item, onEdit, onDelete, onToggle }) {
 export default function Admin() {
   const [authed, setAuthed] = useState(!!localStorage.getItem('ga_admin_token'));
   const [isSetup, setIsSetup] = useState(false);
+  const [resetEnabled, setResetEnabled] = useState(false);
   const [tab, setTab] = useState('catering');
   const [catering, setCatering] = useState([]);
   const [rentals, setRentals] = useState([]);
@@ -942,7 +1085,8 @@ export default function Admin() {
   useEffect(() => {
     api('/api/auth/status')
       .then((d) => {
-        if (!d.setup) setIsSetup(true);
+        setIsSetup(!d.setup);
+        setResetEnabled(!!d.resetEnabled);
       })
       .catch(() => {});
   }, []);
@@ -1041,7 +1185,14 @@ export default function Admin() {
   };
 
   if (!authed) {
-    return <PinLogin onLogin={() => setAuthed(true)} isSetup={isSetup} />;
+    return (
+      <PinLogin
+        onLogin={() => setAuthed(true)}
+        isSetup={isSetup}
+        resetEnabled={resetEnabled}
+        onResetSuccess={() => setIsSetup(false)}
+      />
+    );
   }
 
   const allItems = tab === 'catering' ? catering : rentals;
