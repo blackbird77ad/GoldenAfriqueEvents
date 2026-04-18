@@ -6,7 +6,7 @@ import { buildCateringMessage, whatsappLink, instagramLink, PHONE, WHATSAPP_NUMB
 import ChefCharacter from '../components/ChefCharacter';
 import { PartyPlanner } from '../components/CoordinatorCharacter';
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:8001';
+const API = import.meta.env.VITE_API_URL || 'http://localhost:5050';
 
 export default function Catering() {
   const [items,          setItems]          = useState([]);

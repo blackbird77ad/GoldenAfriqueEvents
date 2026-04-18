@@ -10,11 +10,12 @@ import RentalItem from './Models/RentalItem.mjs';
 import { syncCounterWithCollection } from './utils/itemId.mjs';
 
 const app = express();
-const PORT = process.env.PORT || 8001;
+const PORT = process.env.PORT || 5050;
 
 const DEFAULT_ALLOWED_ORIGINS = [
   'http://localhost:5173',
   'http://localhost:3000',
+  'https://goldenafriqueevent.com',
 ];
 
 const normalizeOrigin = (origin = '') => origin.trim().replace(/\/+$/, '');

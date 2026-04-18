@@ -6,7 +6,7 @@ import {
   ZoomIn, ZoomOut, Move, RotateCw, Maximize2, Package, UtensilsCrossed, AlertCircle, Check,
 } from 'lucide-react';
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:8001';
+const API = import.meta.env.VITE_API_URL || 'http://localhost:5050';
 
 const CATERING_CATEGORIES = ['Main Dishes', 'Proteins', 'Snacks & Pastries', 'Sides', 'Drinks'];
 const RENTAL_CATEGORIES = [

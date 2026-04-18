@@ -5,7 +5,7 @@ import { useCart } from '../context/CartContext';
 import { buildRentalMessage, whatsappLink, instagramLink, PHONE, WHATSAPP_NUMBER } from '../data/contact';
 import { RentalCoordinator } from '../components/CoordinatorCharacter';
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:8001';
+const API = import.meta.env.VITE_API_URL || 'http://localhost:5050';
 
 export default function Rentals() {
   const [items,          setItems]          = useState([]);
