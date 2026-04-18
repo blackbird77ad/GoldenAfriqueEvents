@@ -12,15 +12,44 @@ import { syncCounterWithCollection } from './utils/itemId.mjs';
 const app = express();
 const PORT = process.env.PORT || 8001;
 
-const ALLOWED_ORIGINS = [
+const DEFAULT_ALLOWED_ORIGINS = [
   'http://localhost:5173',
   'http://localhost:3000',
-  'https://goldenafriqueevents.com',
-  'https://www.goldenafriqueevents.com',
-  'https://goldenafriqueevents.pages.dev',
 ];
 
-app.use(cors({ origin: ALLOWED_ORIGINS, credentials: true }));
+const normalizeOrigin = (origin = '') => origin.trim().replace(/\/+$/, '');
+
+const envOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.CLOUDFLARE_URL,
+  process.env.CUSTOM_DOMAIN_URL,
+  ...(process.env.ALLOWED_ORIGINS || '').split(','),
+]
+  .map(normalizeOrigin)
+  .filter(Boolean);
+
+const ALLOWED_ORIGINS = [
+  ...new Set(
+    [...DEFAULT_ALLOWED_ORIGINS, ...envOrigins]
+      .map(normalizeOrigin)
+      .filter(Boolean)
+  ),
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests from tools and health checks that don't send an Origin header.
+    if (!origin) return callback(null, true);
+
+    const normalizedOrigin = normalizeOrigin(origin);
+    if (ALLOWED_ORIGINS.includes(normalizedOrigin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
+  credentials: true,
+}));
 app.use(express.json({ limit: '5mb' }));
 
 app.use('/api/auth', authRoutes);
