@@ -7,6 +7,7 @@ import {
   Music2,
 } from 'lucide-react';
 import { WHATSAPP_NUMBER, PHONE } from '../data/contact';
+import { BRAND_NAME, BRAND_NAME_LINES } from '../data/brand';
 
 const FACEBOOK_LINK = 'https://www.facebook.com/share/p/18LTtfwCVY/';
 const TIKTOK_LINK = 'https://www.tiktok.com/@golden.afrique.ca?_r=1&_t=ZT-95WE9AyllCY';
@@ -96,7 +97,7 @@ const GALLERY = [
 ];
 
 const WA = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-  'Hello Golden Afrique Event!\n\nI would like to place an order. Please share availability and pricing. Thank you!'
+  `Hello ${BRAND_NAME}!\n\nI would like to place an order. Please share availability and pricing. Thank you!`
 )}`;
 
 const socialButtonStyle = {
@@ -117,11 +118,11 @@ const socialButtonStyle = {
 
 export default function Home() {
   return (
-    <div style={{ paddingTop: 92 }}>
+    <div style={{ paddingTop: 'var(--site-header-height)' }}>
       {/* HERO */}
       <section
         style={{
-          minHeight: 'calc(100vh - 92px)',
+          minHeight: 'calc(100vh - var(--site-header-height))',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -131,7 +132,7 @@ export default function Home() {
       >
         <img
           src="/Events-decor/scuba-table-cover-white.jpg"
-          alt="Golden Afrique Event catering and décor setup"
+          alt={`${BRAND_NAME} catering and décor setup`}
           style={{
             position: 'absolute',
             inset: 0,
@@ -184,11 +185,11 @@ export default function Home() {
               marginBottom: 20,
             }}
           >
-            Golden
+            {BRAND_NAME_LINES[0]}
             <br />
-            <span style={{ color: 'var(--gold)' }}>Afrique</span>
+            <span style={{ color: 'var(--gold)' }}>{BRAND_NAME_LINES[1]}</span>
             <br />
-            Event
+            {BRAND_NAME_LINES[2]}
           </h1>
 
           <p
@@ -307,7 +308,7 @@ export default function Home() {
               margin: 0,
             }}
           >
-            Golden Afrique Event proudly serves{' '}
+            {BRAND_NAME} proudly serves{' '}
             <strong>Chicago, Illinois, USA</strong> with African catering, party
             rentals, event décor, and full event setup services for private and
             corporate occasions.
@@ -573,7 +574,7 @@ export default function Home() {
               <div key={i} style={{ aspectRatio: '1/1', overflow: 'hidden', borderRadius: 4 }}>
                 <img
                   src={src}
-                  alt={`Golden Afrique Event setup ${i + 1}`}
+                  alt={`${BRAND_NAME} setup ${i + 1}`}
                   style={{
                     width: '100%',
                     height: '100%',

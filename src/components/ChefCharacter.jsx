@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, ChevronRight } from 'lucide-react';
 import { WHATSAPP_NUMBER } from '../data/contact';
+import { BRAND_NAME } from '../data/brand';
 
 const STEPS = [
   { key: 'food',     question: "What food are you looking for? Describe it and I will make sure we sort you out!",  placeholder: 'e.g. Konkonte with groundnut soup, Ampesi...' },
@@ -67,7 +68,7 @@ function ChefChat({ onClose }) {
   const sendToWhatsApp = () => {
     const a = answers;
     const msg = encodeURIComponent(
-      `Hello Golden Afrique Event!\n\nCustom Food Enquiry:\n\n` +
+      `Hello ${BRAND_NAME}!\n\nCustom Food Enquiry:\n\n` +
       `Food wanted:   ${a.food || '-'}\n` +
       `Quantity:      ${a.quantity || '-'}\n` +
       `Date needed:   ${a.date || '-'}\n` +

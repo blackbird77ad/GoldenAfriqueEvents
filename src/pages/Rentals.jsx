@@ -37,7 +37,10 @@ export default function Rentals() {
   const sendInq = () => { const msg = buildRentalMessage(rentalCart); window.open(whatsappLink(msg), '_blank'); };
 
   return (
-    <div className="min-h-screen bg-white pt-16 md:pt-20">
+    <div
+      className="min-h-screen bg-white"
+      style={{ paddingTop: 'var(--site-header-height)' }}
+    >
 
       {/* Header */}
       <div className="relative py-20 px-4 overflow-hidden bg-black text-white text-center">

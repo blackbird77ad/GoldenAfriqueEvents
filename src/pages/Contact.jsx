@@ -50,7 +50,10 @@ const FAQS = [
 
 export default function Contact() {
   return (
-    <div className="min-h-screen bg-[var(--cream)] pt-24">
+    <div
+      className="min-h-screen bg-[var(--cream)]"
+      style={{ paddingTop: 'var(--site-header-height)' }}
+    >
 
       {/* Header */}
       <div className="bg-[var(--brown-dark)] text-white text-center py-20 px-4">

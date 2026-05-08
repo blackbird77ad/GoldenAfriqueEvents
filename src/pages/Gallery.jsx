@@ -63,7 +63,10 @@ export default function Gallery() {
   const next  = () => setSelected(i => (i === filtered.length - 1 ? 0 : i + 1));
 
   return (
-    <div className="min-h-screen bg-white pt-16 md:pt-20">
+    <div
+      className="min-h-screen bg-white"
+      style={{ paddingTop: 'var(--site-header-height)' }}
+    >
 
       {/* Header */}
       <div className="bg-black text-white text-center py-20 px-4">
@@ -73,7 +76,10 @@ export default function Gallery() {
       </div>
 
       {/* Filters */}
-      <div className="bg-gray-50 border-b border-gray-100 py-4 px-4 sticky top-16 md:top-20 z-30">
+      <div
+        className="bg-gray-50 border-b border-gray-100 py-4 px-4 sticky z-30"
+        style={{ top: 'var(--site-header-height)' }}
+      >
         <div className="max-w-7xl mx-auto flex gap-2 overflow-x-auto hide-scroll">
           {FILTERS.map(f => (
             <button key={f.key} onClick={() => { setFilter(f.key); }}

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, ChevronRight } from 'lucide-react';
 import { WHATSAPP_NUMBER } from '../data/contact';
+import { BRAND_NAME } from '../data/brand';
 
 // SVG Coordinator Character
 const CoordinatorSVG = ({ size = 80 }) => (
@@ -66,7 +67,7 @@ const RENTAL_STEPS = [
 ];
 
 const buildPartyMessage = a =>
-  `Hello Golden Afrique Event! 🎉\n\nParty Planning Enquiry:\n\n` +
+  `Hello ${BRAND_NAME}! 🎉\n\nParty Planning Enquiry:\n\n` +
   `Event type:   ${a.event || '-'}\n` +
   `Guest count:  ${a.guests || '-'}\n` +
   `Event date:   ${a.date || '-'}\n` +
@@ -78,7 +79,7 @@ const buildPartyMessage = a =>
   `Please reach out to discuss our event. Thank you!`;
 
 const buildRentalMessage = a =>
-  `Hello Golden Afrique Event! 📋\n\nRental Enquiry (Item Not Listed):\n\n` +
+  `Hello ${BRAND_NAME}! 📋\n\nRental Enquiry (Item Not Listed):\n\n` +
   `Item wanted:  ${a.item || '-'}\n` +
   `Quantity:     ${a.quantity || '-'}\n` +
   `Date needed:  ${a.date || '-'}\n\n` +

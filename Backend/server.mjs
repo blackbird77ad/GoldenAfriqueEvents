@@ -16,6 +16,7 @@ const DEFAULT_ALLOWED_ORIGINS = [
   'http://localhost:5173',
   'http://localhost:3000',
   'https://goldenafriqueevent.com',
+  'https://goldenafriqueevents.com',
 ];
 
 const normalizeOrigin = (origin = '') => origin.trim().replace(/\/+$/, '');
@@ -57,7 +58,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/catering', cateringRoutes);
 app.use('/api/rentals', rentalRoutes);
 
-app.get('/', (req, res) => res.send('Golden Afrique Event API running'));
+app.get('/', (req, res) => res.send('Golden Afrique Events API running'));
 
 app.use((err, req, res, next) => {
   console.error(err);

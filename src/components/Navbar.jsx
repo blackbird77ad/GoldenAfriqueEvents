@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingBag, UtensilsCrossed } from 'lucide-react';
+import { Menu, X, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { BRAND_NAME } from '../data/brand';
 
 const LINKS = [
   { path: '/',         label: 'Home'     },
@@ -10,6 +11,8 @@ const LINKS = [
   { path: '/gallery',  label: 'Gallery'  },
   { path: '/contact',  label: 'Contact'  },
 ];
+
+const BRAND_LOGO = '/brand-logo-tight.jpeg';
 
 export default function Navbar() {
   const [open,      setOpen]      = useState(false);
@@ -23,23 +26,55 @@ export default function Navbar() {
 
   /* Navbar is always solid brown-dark , never transparent, never clashes */
   return (
-    <nav style={{ background: 'var(--brown-dark)', borderBottom: '3px solid var(--gold-dark)', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50 }}>
+    <nav
+      style={{
+        background: 'linear-gradient(135deg, #181006 0%, #0D0B09 52%, #241507 100%)',
+        borderBottom: '3px solid var(--gold-dark)',
+        boxShadow: '0 10px 28px rgba(0,0,0,0.28)',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 50,
+      }}
+    >
 
       {/* Top strip */}
       {/* <div style={{ background: 'var(--black)', color: 'var(--gold)', fontSize: '0.68rem', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', textAlign: 'center', padding: '6px 1rem' }}>
         Call or Text: (815) 905-1230 &nbsp; | &nbsp; @goldenafriqueevent
       </div> */}
 
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 64 }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 80 }}>
 
         {/* Logo */}
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
-          <div style={{ width: 36, height: 36, background: 'var(--gold)', borderRadius: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <UtensilsCrossed size={18} color="var(--brown-dark)" />
-          </div>
+        <Link
+          to="/"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 14,
+            textDecoration: 'none',
+          }}
+        >
+          <img
+            src={BRAND_LOGO}
+            alt={`${BRAND_NAME} logo`}
+            style={{
+              width: 68,
+              height: 68,
+              objectFit: 'contain',
+              objectPosition: 'center',
+              borderRadius: 14,
+              border: '2px solid rgba(245,200,66,0.82)',
+              boxShadow: '0 8px 18px rgba(0,0,0,0.2)',
+              background: 'transparent',
+              display: 'block',
+              flexShrink: 0,
+            }}
+          />
           <div>
-            <div style={{ color: 'var(--gold)', fontWeight: 900, fontSize: '1rem', lineHeight: 1.1 }}>Golden Afrique Event</div>
-            <div style={{ color: 'var(--brown-light)', fontSize: '0.6rem', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700 }}>Catering and Rentals</div>
+            <div style={{ color: 'var(--gold)', fontWeight: 900, fontSize: '1rem', lineHeight: 1.1 }}>{BRAND_NAME}</div>
+            <div style={{ color: 'rgba(255,244,219,0.82)', fontSize: '0.6rem', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700 }}>Catering and Rentals</div>
           </div>
         </Link>
 
@@ -100,7 +135,7 @@ export default function Navbar() {
 
       {/* Mobile menu , solid, always readable */}
       {open && (
-        <div style={{ background: 'var(--brown-dark)', borderTop: '2px solid var(--gold-dark)', padding: '12px 1.5rem 20px' }}>
+        <div style={{ background: 'linear-gradient(180deg, #140D06 0%, #0D0B09 100%)', borderTop: '2px solid var(--gold-dark)', padding: '12px 1.5rem 20px' }}>
           {LINKS.map(({ path, label }) => (
             <Link key={path} to={path} style={{
               display: 'block', padding: '12px 16px', borderRadius: 6, marginBottom: 4,

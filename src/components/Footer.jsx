@@ -5,13 +5,14 @@ import {
   Mail,
   Facebook,
   Music2,
-  UtensilsCrossed,
 } from 'lucide-react';
 import { WHATSAPP_NUMBER, PHONE } from '../data/contact';
+import { BRAND_NAME } from '../data/brand';
 
 const EMAIL = 'goldenafriqueevent@gmail.com';
 const FACEBOOK_LINK = 'https://www.facebook.com/share/p/18LTtfwCVY/';
 const TIKTOK_LINK = 'https://www.tiktok.com/@golden.afrique.ca?_r=1&_t=ZT-95WE9AyllCY';
+const BRAND_LOGO = '/brand-logo-tight.jpeg';
 
 const contactLinkStyle = {
   display: 'flex',
@@ -44,28 +45,29 @@ export default function Footer() {
       >
         {/* Brand */}
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-            <div
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 14, marginBottom: 18 }}>
+            <img
+              src={BRAND_LOGO}
+              alt={`${BRAND_NAME} logo`}
               style={{
-                width: 36,
-                height: 36,
-                background: 'var(--gold)',
-                borderRadius: 3,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                width: 156,
+                height: 156,
+                objectFit: 'contain',
+                objectPosition: 'center',
+                borderRadius: 18,
+                border: '2px solid rgba(245,200,66,0.82)',
+                boxShadow: '0 10px 22px rgba(0,0,0,0.18)',
+                background: 'transparent',
+                display: 'block',
+                flexShrink: 0,
+                maxWidth: '100%',
               }}
-            >
-              <UtensilsCrossed size={18} color="var(--brown-dark)" />
-            </div>
-
+            />
             <div>
-              <div style={{ color: 'var(--gold)', fontWeight: 900, fontSize: '1rem' }}>
-                Golden Afrique Event
-              </div>
+              <div style={{ color: 'var(--gold)', fontWeight: 900, fontSize: '1rem' }}>{BRAND_NAME}</div>
               <div
                 style={{
-                  color: 'var(--brown-light)',
+                  color: 'rgba(255,244,219,0.82)',
                   fontSize: '0.6rem',
                   letterSpacing: '0.18em',
                   textTransform: 'uppercase',
@@ -189,7 +191,7 @@ export default function Footer() {
         }}
       >
         <p style={{ fontSize: '0.72rem', margin: 0 }}>
-          2026 Golden Afrique Event. All rights reserved.
+          2026 {BRAND_NAME}. All rights reserved.
         </p>
 
         <p style={{ fontSize: '0.72rem', marginTop: 8 }}>

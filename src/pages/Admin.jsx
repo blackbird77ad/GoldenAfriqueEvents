@@ -5,6 +5,7 @@ import {
   Search, LayoutGrid, List, ChevronLeft, ChevronRight,
   ZoomIn, ZoomOut, Move, RotateCw, Maximize2, Package, UtensilsCrossed, AlertCircle, Check,
 } from 'lucide-react';
+import { BRAND_NAME } from '../data/brand';
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:5050';
 
@@ -818,7 +819,7 @@ function PinLogin({ onLogin, isSetup, resetEnabled, onResetSuccess }) {
             🔐
           </div>
           <div style={{ fontWeight:900, fontSize:'1.1rem', color:'var(--brown-dark)' }}>{title}</div>
-          <div style={{ fontSize:'0.78rem', color:'var(--brown)', marginTop:4 }}>Golden Afrique Event</div>
+          <div style={{ fontSize:'0.78rem', color:'var(--brown)', marginTop:4 }}>{BRAND_NAME}</div>
           <div style={{ fontSize:'0.72rem', color:'var(--brown-light)', marginTop:8 }}>{subtitle}</div>
         </div>
 
@@ -1233,7 +1234,7 @@ export default function Admin() {
           <div>
             <div style={{ fontWeight: 900, fontSize: '0.9rem', color: 'var(--gold)' }}>Admin Dashboard</div>
             <div style={{ fontSize: '0.6rem', color: 'var(--brown-light)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-              Golden Afrique Event
+              {BRAND_NAME}
             </div>
           </div>
         </div>
