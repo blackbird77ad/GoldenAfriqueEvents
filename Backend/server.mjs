@@ -16,7 +16,9 @@ const DEFAULT_ALLOWED_ORIGINS = [
   'http://localhost:5173',
   'http://localhost:3000',
   'https://goldenafriqueevent.com',
+  'https://www.goldenafriqueevent.com',
   'https://goldenafriqueevents.com',
+  'https://www.goldenafriqueevents.com',
 ];
 
 const normalizeOrigin = (origin = '') => origin.trim().replace(/\/+$/, '');

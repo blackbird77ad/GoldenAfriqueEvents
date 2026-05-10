@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { CartProvider } from './context/CartContext';
 import Navbar   from './components/Navbar';
 import Footer   from './components/Footer';
+import Seo      from './components/Seo';
 import Home     from './pages/Home';
 import Catering from './pages/Catering';
 import Rentals  from './pages/Rentals';
@@ -23,6 +24,7 @@ export default function App() {
   return (
     <CartProvider>
       <ScrollToTop />
+      <Seo />
       <div className="min-h-screen flex flex-col">
         {!isAdmin && <Navbar />}
         <main className="flex-1">

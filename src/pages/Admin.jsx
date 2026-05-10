@@ -1185,17 +1185,6 @@ export default function Admin() {
     setAuthed(false);
   };
 
-  if (!authed) {
-    return (
-      <PinLogin
-        onLogin={() => setAuthed(true)}
-        isSetup={isSetup}
-        resetEnabled={resetEnabled}
-        onResetSuccess={() => setIsSetup(false)}
-      />
-    );
-  }
-
   const allItems = tab === 'catering' ? catering : rentals;
   const cats = ['All', ...(tab === 'catering' ? CATERING_CATEGORIES : RENTAL_CATEGORIES)];
 
@@ -1223,6 +1212,17 @@ export default function Admin() {
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
   const paged = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
+  if (!authed) {
+    return (
+      <PinLogin
+        onLogin={() => setAuthed(true)}
+        isSetup={isSetup}
+        resetEnabled={resetEnabled}
+        onResetSuccess={() => setIsSetup(false)}
+      />
+    );
+  }
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--cream)', fontFamily: 'inherit' }}>
