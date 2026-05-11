@@ -9,8 +9,8 @@ import {
 import { WHATSAPP_NUMBER, PHONE } from '../data/contact';
 import { BRAND_NAME, BRAND_NAME_LINES } from '../data/brand';
 
-const FACEBOOK_LINK = 'https://www.facebook.com/share/p/18LTtfwCVY/';
-const TIKTOK_LINK = 'https://www.tiktok.com/@golden.afrique.ca?_r=1&_t=ZT-95WE9AyllCY';
+const FACEBOOK_LINK = 'https://www.facebook.com/share/1V6P3zDYGp/?mibextid=wwXIfr';
+const TIKTOK_LINK = 'https://www.tiktok.com/@goldenafriqueevent?_r=1&_t=ZS-96G5htmgwGm';
 const EMAIL = 'goldenafriqueevent@gmail.com';
 
 const STATS = [

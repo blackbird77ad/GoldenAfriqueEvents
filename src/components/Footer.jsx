@@ -11,8 +11,8 @@ import { WHATSAPP_NUMBER, PHONE, instagramLink } from '../data/contact';
 import { BRAND_NAME } from '../data/brand';
 
 const EMAIL = 'goldenafriqueevent@gmail.com';
-const FACEBOOK_LINK = 'https://www.facebook.com/share/p/18LTtfwCVY/';
-const TIKTOK_LINK = 'https://www.tiktok.com/@golden.afrique.ca?_r=1&_t=ZT-95WE9AyllCY';
+const FACEBOOK_LINK = 'https://www.facebook.com/share/1V6P3zDYGp/?mibextid=wwXIfr';
+const TIKTOK_LINK = 'https://www.tiktok.com/@goldenafriqueevent?_r=1&_t=ZS-96G5htmgwGm';
 const BRAND_LOGO = '/brand-logo-tight.jpeg';
 
 const contactLinkStyle = {
