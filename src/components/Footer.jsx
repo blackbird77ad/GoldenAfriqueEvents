@@ -3,10 +3,11 @@ import {
   Phone,
   MessageCircle,
   Mail,
+  Instagram,
   Facebook,
   Music2,
 } from 'lucide-react';
-import { WHATSAPP_NUMBER, PHONE } from '../data/contact';
+import { WHATSAPP_NUMBER, PHONE, instagramLink } from '../data/contact';
 import { BRAND_NAME } from '../data/brand';
 
 const EMAIL = 'goldenafriqueevent@gmail.com';
@@ -157,6 +158,16 @@ export default function Footer() {
             <a href={`mailto:${EMAIL}`} style={contactLinkStyle}>
               <Mail size={16} />
               <span>{EMAIL}</span>
+            </a>
+
+            <a
+              href={instagramLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={contactLinkStyle}
+            >
+              <Instagram size={16} />
+              <span>Instagram</span>
             </a>
 
             <a

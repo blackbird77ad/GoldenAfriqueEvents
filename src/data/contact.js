@@ -1,7 +1,7 @@
 import { BRAND_NAME } from './brand';
 
 export const WHATSAPP_NUMBER = '18159051230';
-export const INSTAGRAM = '@goldenafriqueevent';
+export const INSTAGRAM = '@goldenafriqueevents';
 export const PHONE = '(815) 905-1230';
 
 export const buildCateringMessage = (cart) => {
@@ -19,4 +19,4 @@ export const buildRentalMessage = (cart) => {
 };
 
 export const whatsappLink = (msg) => `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
-export const instagramLink = `https://instagram.com/${INSTAGRAM.replace('@', '')}`;
+export const instagramLink = 'https://www.instagram.com/goldenafriqueevents';

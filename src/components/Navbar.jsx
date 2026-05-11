@@ -41,7 +41,7 @@ export default function Navbar() {
 
       {/* Top strip */}
       {/* <div style={{ background: 'var(--black)', color: 'var(--gold)', fontSize: '0.68rem', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', textAlign: 'center', padding: '6px 1rem' }}>
-        Call or Text: (815) 905-1230 &nbsp; | &nbsp; @goldenafriqueevent
+        Call or Text: (815) 905-1230 &nbsp; | &nbsp; @goldenafriqueevents
       </div> */}
 
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 80 }}>
